@@ -1,7 +1,7 @@
-
 import random
 import itertools
 import numpy
+from matrix import Matrix
 
 def pairs_that_start_with(first_value,upper_bound):
     return map(lambda x: (first_value,x), range(first_value+1,upper_bound))
@@ -33,17 +33,11 @@ def count_hamiltonian_paths_starting_with(edges, v, counter):
             running_sum += count_hamiltonian_paths_starting_with(remove_visited_edges(edges, v), b, counter-1)
         return running_sum
 
-
-
-
-
-
 # counts the number of Hamiltonian paths in a tournament on n vertices
 # with the given orientations
 
 def count_hamiltonian_paths(edges, n):
     return sum(map(lambda i: count_hamiltonian_paths_starting_with(edges, i, n-1), range(1,n+1)))
-
 
 # simulates n coin flips
 def coinToss(n):
@@ -56,10 +50,7 @@ def coinToss(n):
               recordList.append(0)
     return recordList
 
-
-
 # flips every ordered pair in a list
-
 def flip(edges):
     flipped_edges = []
     for i in range(0,len(edges)):
@@ -67,10 +58,7 @@ def flip(edges):
         flipped_edges.append((b,a))
     return flipped_edges
 
-
-
 #generates a random tournament on n vertices
-
 def random_tournament(n):
     pairs = list(itertools.combinations(range(1,n+1), 2))
     pairs_flipped = flip(pairs)
@@ -84,7 +72,6 @@ def random_tournament(n):
             randTournament.append(pairs_flipped[i])
     return randTournament
 
-
 def hamiltonian_Histogram(n, sampleSize):
     hamiltonianList = []
     for i in range(sampleSize):
@@ -93,8 +80,8 @@ def hamiltonian_Histogram(n, sampleSize):
     return hamiltonianList
 
 
-
-print hamiltonian_Histogram(10,30)
+print(Matrix(10, random_tournament(10)).adj)
+#print hamiltonian_Histogram(10,30)
 
 
 
