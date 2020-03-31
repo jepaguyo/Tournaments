@@ -6,7 +6,7 @@ from matrix import Matrix
 def pairs_that_start_with(first_value,upper_bound):
     return map(lambda x: (first_value,x), range(first_value+1,upper_bound))
 
-def all_pairs(n):
+def all_edges(n):
     list_of_list = map(lambda x: pairs_that_start_with(x,n+1), range(1,n))
     return reduce(list.__add__, list_of_list)
 
@@ -72,15 +72,36 @@ def random_tournament(n):
             randTournament.append(pairs_flipped[i])
     return randTournament
 
-def hamiltonian_Histogram(n, sampleSize):
-    hamiltonianList = []
+
+def a_tournament(edges, k):
+    if k == 0:
+        return edges
+    elif k%2 == 0:
+       return [edges[0]] + a_tournament(edges[1:len(edges)], k//2) 
+    else:
+       return flip([edges[0]]) + a_tournament(edges[1:len(edges)], k//2)
+    
+def all_tournaments(n):
+    edges = all_edges(n)
+    return map(lambda k: a_tournament(edges,k), range(0,2**(n*(n-1)//2)))
+
+def random_hamiltonian_histogram(n, sampleSize):
+    hamiltonian_list = []
     for i in range(sampleSize):
-        hamiltonianList.append(count_hamiltonian_paths(random_tournament(n), n))
-    hamiltonianList.sort()
-    return hamiltonianList
+        hamiltonian_list.append(count_hamiltonian_paths(random_tournament(n), n))
+    hamiltonian_list.sort()
+    return hamiltonian_list
+
+def hamiltonian_histogram(n):
+    return map(lambda tournament: count_hamiltonian_paths(tournament, n), all_tournaments(n))
 
 
-print(Matrix(10, random_tournament(10)).adj)
+#print(a_tournament([(1,2), (1,3), (2,3)], 5))
+print(hamiltonian_histogram(4))
+
+#print(map(lambda tournament : count_hamiltonian_paths(tournament, 3), all_edges(3)))
+
+#print(Matrix(10, random_tournament(10)).adj)
 #print hamiltonian_Histogram(10,30)
 
 
