@@ -1,22 +1,12 @@
 import random
 import itertools
-import numpy
+import collections
+import numpy as np
 from matrix import Matrix
 
-def pairs_that_start_with(first_value,upper_bound):
-    return map(lambda x: (first_value,x), range(first_value+1,upper_bound))
 
 def all_edges(n):
-    list_of_list = map(lambda x: pairs_that_start_with(x,n+1), range(1,n))
-    return reduce(list.__add__, list_of_list)
-
-
-#def flip(edges, index):
-#    for i in range(0,len(edges)):
-#        if index >> i & 1 == 1:
-#            (a,b) = edges[i]
-#            edges[i] = (b,a)
-#    return edges
+    return list(itertools.combinations(range(1,n+1), 2))
 
 def remove_visited_edges(edges, v):
     return filter(lambda (a,b): (a != v) & (b != v), edges)
@@ -72,7 +62,6 @@ def random_tournament(n):
             randTournament.append(pairs_flipped[i])
     return randTournament
 
-
 def a_tournament(edges, k):
     if k == 0:
         return edges
@@ -80,29 +69,40 @@ def a_tournament(edges, k):
        return [edges[0]] + a_tournament(edges[1:len(edges)], k//2) 
     else:
        return flip([edges[0]]) + a_tournament(edges[1:len(edges)], k//2)
-    
+
+#generates all tournaments on n vertices    
 def all_tournaments(n):
     edges = all_edges(n)
     return map(lambda k: a_tournament(edges,k), range(0,2**(n*(n-1)//2)))
+
+#returns a histogram of Hamiltonian path numbers and the number of occurences 
+def hamiltonian_path_counts(histogram):
+    return sorted(collections.Counter(histogram).items())
 
 def random_hamiltonian_histogram(n, sampleSize):
     hamiltonian_list = []
     for i in range(sampleSize):
         hamiltonian_list.append(count_hamiltonian_paths(random_tournament(n), n))
     hamiltonian_list.sort()
-    return hamiltonian_list
+    return hamiltonian_list, hamiltonian_path_counts(hamiltonian_list)
 
 def hamiltonian_histogram(n):
-    return map(lambda tournament: count_hamiltonian_paths(tournament, n), all_tournaments(n))
+    histogram = map(lambda tournament: count_hamiltonian_paths(tournament, n), all_tournaments(n))
+    histogram.sort()
+    return histogram, hamiltonian_path_counts(histogram)
+
+randlist, randcounts = random_hamiltonian_histogram(6,10000)
+hamlist, hamcounts = hamiltonian_histogram(6)
+#print(hamlist)
+#print(hamcounts)
+#print(randlist)
+#print(randcounts)
+print('\n'.join(map(str, hamcounts)))
+print('\n'.join(map(str, randcounts)))
 
 
-#print(a_tournament([(1,2), (1,3), (2,3)], 5))
-print(hamiltonian_histogram(4))
 
-#print(map(lambda tournament : count_hamiltonian_paths(tournament, 3), all_edges(3)))
 
-#print(Matrix(10, random_tournament(10)).adj)
-#print hamiltonian_Histogram(10,30)
 
 
 
