@@ -91,14 +91,38 @@ def hamiltonian_histogram(n):
     histogram.sort()
     return histogram, hamiltonian_path_counts(histogram)
 
-randlist, randcounts = random_hamiltonian_histogram(6,10000)
-hamlist, hamcounts = hamiltonian_histogram(6)
+def balance_edge(edge, n):
+    (i,j) = edge
+    if 2*((i-j)%n) < n:
+        return edge
+    else:
+        return (j,i)
+
+def balanced_tournament(n):
+    return list(map(lambda edge: balance_edge(edge, n), all_edges(n)))
+
+
+def record_count(n):
+    current_record = 0
+    for tournament in all_tournaments(n):
+        number_of_hamiltonian_paths = count_hamiltonian_paths(tournament, n)
+        if number_of_hamiltonian_paths >= current_record:
+            current_record = number_of_hamiltonian_paths
+            print('Number of paths:', current_record)
+            print(tournament)
+
+print(record_count(6))
+
+
+
+# randlist, randcounts = random_hamiltonian_histogram(6,10000)
+# hamlist, hamcounts = hamiltonian_histogram(6)
 #print(hamlist)
 #print(hamcounts)
 #print(randlist)
 #print(randcounts)
-print('\n'.join(map(str, hamcounts)))
-print('\n'.join(map(str, randcounts)))
+# print('\n'.join(map(str, hamcounts)))
+# print('\n'.join(map(str, randcounts)))
 
 
 
